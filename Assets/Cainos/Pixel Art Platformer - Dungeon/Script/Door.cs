@@ -58,5 +58,21 @@ namespace Cainos.PixelArtPlatformer_Dungeon
         {
             IsOpened = false;
         }
+        public void Update()
+        {
+            if(Input.GetButtonDown("OpenDoor"))
+            OpenDoor();
+        }
+
+        private void OpenDoor(){
+            Debug.Log("Button Pressed");
+            IsOpened = true;
+            Debug.Log(IsOpened);
+            StartCoroutine(closeDoor());
+        }
+        private IEnumerator closeDoor(){
+            yield return new WaitForSeconds(1f);
+            IsOpened = false;
+        }
     }
 }
