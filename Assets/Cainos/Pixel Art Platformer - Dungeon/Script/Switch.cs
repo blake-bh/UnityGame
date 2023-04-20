@@ -11,6 +11,7 @@ namespace Cainos.PixelArtPlatformer_Dungeon
         public SpriteRenderer spriteRenderer;
         public Sprite spriteOpened;
         public Sprite spriteClosed;
+        public Transform t;
 
         private Animator Animator
         {
@@ -26,6 +27,11 @@ namespace Cainos.PixelArtPlatformer_Dungeon
         {
             IsOn = isOn;
             Animator.SetBool("IsOn", isOn);
+        }
+         public void Update()
+        {
+            if(Input.GetButtonDown("OpenDoor") && t.position.x > 63.39  && t.position.x < 64.1)
+            OpenDoor();
         }
 
         [ExposeProperty]
@@ -51,6 +57,14 @@ namespace Cainos.PixelArtPlatformer_Dungeon
 
         public void TurnOff()
         {
+            IsOn = false;
+        }
+          private void OpenDoor(){
+            IsOn = true;
+            StartCoroutine(closeDoor());
+        }
+        private IEnumerator closeDoor(){
+            yield return new WaitForSeconds(2f);
             IsOn = false;
         }
     }

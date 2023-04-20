@@ -10,6 +10,11 @@ namespace Cainos.PixelArtPlatformer_Dungeon
         public Sprite spriteOpened;
         public Sprite spriteClosed;
 
+        public GameObject player;
+
+        public Transform t;
+        
+
 
         private Animator Animator
         {
@@ -46,6 +51,7 @@ namespace Cainos.PixelArtPlatformer_Dungeon
         {
             Animator.Play(isOpened ? "Opened" : "Closed");
             IsOpened = isOpened;
+           t = player.GetComponent<Transform>();
         }
 
 
@@ -60,7 +66,7 @@ namespace Cainos.PixelArtPlatformer_Dungeon
         }
         public void Update()
         {
-            if(Input.GetButtonDown("OpenDoor"))
+            if(Input.GetButtonDown("OpenDoor") && t.position.x > -5 && t.position.x < -3.5)
             OpenDoor();
         }
 
@@ -71,7 +77,7 @@ namespace Cainos.PixelArtPlatformer_Dungeon
             StartCoroutine(closeDoor());
         }
         private IEnumerator closeDoor(){
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
             IsOpened = false;
         }
     }

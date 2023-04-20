@@ -15,6 +15,22 @@ public class PlayerMovement : MonoBehaviour
    private enum MovementState {idle, running, jumping, falling };
    [SerializeField] private AudioSource jumpSoundEffect;
 
+   private bool isWallSliding;
+   private float wallSlidingSpeed = 2f;
+
+   private bool isWallJumping;
+   private bool wallJumpingDirection;
+   private float wallJumpingTime= 0.2f;
+   private float wallJumpingCounter;
+   private float wallJumpingDuration = 0.4f;
+   private Vector2 wallJumpingPower = new Vector2(8f,16f);
+
+   [SerializeField] private Transform wallCheck;
+    [SerializeField] private Transform wallCheck2;
+
+   [SerializeField] private LayerMask wallLayer;
+
+
     
     // Start is called before the first frame update
    private void Start()
@@ -39,7 +55,14 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
 
-        UpdateAnimationState();
+        WallSlide();
+        WallJump();
+
+        if(!isWallJumping)
+        {
+            UpdateAnimationState();
+        }
+
         
     }
 
@@ -79,4 +102,67 @@ public class PlayerMovement : MonoBehaviour
     {
        return Physics2D.BoxCast(col.bounds.center,col.bounds.size,0f,Vector2.down,.1f, jumpableGround);
     }
+
+    private bool isWalled()
+    { 
+        if(sprite.flipX == false)
+        {
+            return Physics2D.OverlapCircle(wallCheck.position, 0.2f,wallLayer);
+        }
+        else
+        {
+            return Physics2D.OverlapCircle(wallCheck2.position, 0.2f,wallLayer);
+        }
+        
+       
+    }
+
+    private void WallSlide()
+    {
+        if( isWalled() )
+        {
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+    private void WallJump()
+    {
+        if(isWallSliding)
+        {
+            isWallJumping = false;
+           /*  if(sprite.flipX == false)
+            {
+                wallJumpingDirection = true;
+            }
+            else
+            {
+                wallJumpingDirection = false;
+            } */
+            wallJumpingCounter = wallJumpingTime;
+            CancelInvoke(nameof(stopWallJumping));
+        }
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
+        }
+        
+        if(Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
+        {
+            isWallJumping = true;
+           // sprite.flipX = wallJumpingDirection;
+            rb.velocity = new Vector2(wallJumpingPower.x, wallJumpingPower.y);
+            wallJumpingCounter = 0f;
+        }
+        Invoke(nameof(stopWallJumping), wallJumpingDuration);
+    }
+
+    private void stopWallJumping()
+    {
+        isWallJumping = false;
+    }
+
 }
