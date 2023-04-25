@@ -12,10 +12,10 @@ public class PlayerMovement : MonoBehaviour
    private SpriteRenderer sprite;
    [SerializeField]private float moveSpeed = 7f;
    [SerializeField]private float jumpForce = 14f;
-   private enum MovementState {idle, running, jumping, falling };
+   private enum MovementState {idle, running, jumping, falling, sliding};
    [SerializeField] private AudioSource jumpSoundEffect;
 
-   private bool isWallSliding;
+   private bool isWallSliding = false;
    private float wallSlidingSpeed = 2f;
 
    private bool isWallJumping;
@@ -57,11 +57,8 @@ public class PlayerMovement : MonoBehaviour
 
         WallSlide();
         WallJump();
-
-        if(!isWallJumping)
-        {
-            UpdateAnimationState();
-        }
+        UpdateAnimationState();
+       
 
         
     }
@@ -89,9 +86,13 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.jumping;
         }
-        else if(rb.velocity.y < -.1f)
+        else if(rb.velocity.y < -.1f && isWallSliding == false)
         {
             state = MovementState.falling;
+        }
+        else if(isWallSliding == true)
+        {
+            state = MovementState.sliding;
         }
 
         anim.SetInteger("State", (int)state);
