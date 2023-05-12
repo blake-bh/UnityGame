@@ -4,7 +4,7 @@ This is a Unity project called Dungeon Escape that is available on GitHub. This 
 **Getting Started**
 To get started with this project, follow these steps:
 
-Clone the repository onto your local machine using git clone .
+Clone the repository onto your local machine using **git clone https://github.com/blake-bh/UnityGame**
 
 Open the Unity Hub and click the "Add" button to add the project to your list of projects.
 
